@@ -180,7 +180,14 @@ function Out-RsRestFolderContent
             else
             {
                 Write-Verbose "Parsing metadata for $($catalogItem.Name)..."
+                try ## MM - little fix
+                {
                 Out-RsRestCatalogItemId -RsItemInfo $catalogItem -Destination $Destination -ReportPortalUri $ReportPortalUri -RestApiVersion $RestApiVersion -Credential $Credential -WebSession $WebSession
+                }
+                catch ## MM - plus catch block - there might be issues with missing privileges to download all User Folder reports...
+                {
+                      Write-Error("Error: There was a problem downloading $($catalogItem.Name)")
+                }
             }
         }
     }
